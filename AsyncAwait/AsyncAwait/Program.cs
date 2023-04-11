@@ -10,6 +10,7 @@ namespace AsyncAwait
 {
 	public class Program
 	{
+
 		private static void Main(string[] args)
 		{
 			Console.WriteLine("Nastavit pozici výstupu");
@@ -18,9 +19,10 @@ namespace AsyncAwait
 			Console.WriteLine("-= sekvenční =-");
 			var watch = Stopwatch.StartNew();
 
-			for (int i = 2; i < 20; i++)
+			for (int i = 2; i < 50; i++)
 			{
 				var result = SumRootN(i);
+
 				Console.WriteLine($"root {i} : {result}");
 			}
 
@@ -41,8 +43,10 @@ namespace AsyncAwait
 			Console.WriteLine("-= task vrací hodnotu =-");
 			watch = Stopwatch.StartNew();
 
-			for (int i = 2; i < 20; i++)
+			for (int i = 2; i < 50; i++)
 			{
+				var thread = new Thread(() => SumRootN(i));
+				thread.Start();
 				var result = Task.Run<double>(() => SumRootN(i)).Result;
 				Console.WriteLine($"root {i} : {result}");
 			}
@@ -64,7 +68,7 @@ namespace AsyncAwait
 			Console.WriteLine("-= vše v tasku =-");
 			watch = Stopwatch.StartNew();
 
-			for (int i = 2; i < 20; i++)
+			for (int i = 2; i < 50; i++)
 			{
 				Task.Run(() =>
 				{
@@ -90,7 +94,7 @@ namespace AsyncAwait
 			Console.WriteLine("-= vše v tasku opravený parametr =-");
 			watch = Stopwatch.StartNew();
 
-			for (int i = 2; i < 20; i++)
+			for (int i = 2; i < 50; i++)
 			{
 				int param = i;
 				Task.Run(() =>
@@ -102,7 +106,6 @@ namespace AsyncAwait
 
 			Console.WriteLine(watch.Elapsed);
 			Console.WriteLine("A co to měření času?");
-			Console.WriteLine("Mimochodem, k tomuhle se ještě vrátíme.");
 			Console.ReadLine();
 
 			/*
@@ -118,18 +121,24 @@ namespace AsyncAwait
 			Console.WriteLine("-= vše v tasku opravený parametr =-");
 			watch = Stopwatch.StartNew();
 
-			List<Task> tasky = new List<Task>();
-			for (int i = 2; i < 20; i++)
+			List<Task<double>> tasky = new List<Task<double>>();
+			for (int i = 2; i < 50; i++)
 			{
 				int param = i;
-				Task task = Task.Run(() =>
+				var task = Task.Run(() =>
 					{
 						var result = SumRootN(param);
 						Console.WriteLine($"root {param} : {result}");
+						return result;
 					});
 				tasky.Add(task);
 			}
 			Task.WaitAll(tasky.ToArray());
+			double sum = 0;
+			foreach (var task in tasky)
+			{
+				sum = sum + task.Result;
+			}
 
 			Console.WriteLine(watch.Elapsed);
 			Console.WriteLine("To už je lepší");
@@ -148,7 +157,7 @@ namespace AsyncAwait
 			Console.WriteLine("-= parallel for =-");
 			watch = Stopwatch.StartNew();
 
-			Parallel.For(2, 20, (i) =>
+			Parallel.For(2, 50, (i) =>
 			{
 				var result = SumRootN(i);
 				Console.WriteLine($"root {i} : {result}");

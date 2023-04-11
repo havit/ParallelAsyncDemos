@@ -33,7 +33,7 @@ namespace TaskThread
 			Console.WriteLine("-= new Thread =-");
 			var watch = Stopwatch.StartNew();
 
-			for (int i = 2; i < 20; i++)
+			for (int i = 2; i < 50; i++)
 			{
 				Thread thread = new Thread(_ => SumRootN(i));
 				thread.Start();
@@ -59,7 +59,7 @@ namespace TaskThread
 			watch = Stopwatch.StartNew();
 			var events = new List<ManualResetEvent>();
 
-			for (int i = 2; i < 20; i++)
+			for (int i = 2; i < 50; i++)
 			{
 				var resetEvent = new ManualResetEvent(false);
 				Thread thread = new Thread(_ =>
@@ -90,7 +90,7 @@ namespace TaskThread
 			watch = Stopwatch.StartNew();
 			events = new List<ManualResetEvent>();
 
-			for (int i = 2; i < 20; i++)
+			for (int i = 2; i < 50; i++)
 			{
 				int j = i;
 				var resetEvent = new ManualResetEvent(false);
@@ -121,7 +121,7 @@ namespace TaskThread
 			watch = Stopwatch.StartNew();
 			List<Task> tasks = new List<Task>();
 
-			for (int i = 2; i < 20; i++)
+			for (int i = 2; i < 50; i++)
 			{
 				int j = i;
 				Task task = Task.Factory.StartNew(() => SumRootN(j));
@@ -147,7 +147,7 @@ namespace TaskThread
 			watch = Stopwatch.StartNew();
 			tasks = new List<Task>();
 
-			for (int i = 2; i < 20; i++)
+			for (int i = 2; i < 50; i++)
 			{
 				int j = i;
 				Task task = Task.Run(() => SumRootN(j));
@@ -173,7 +173,7 @@ namespace TaskThread
 			watch = Stopwatch.StartNew();
 			List<Action> actions = new List<Action>();
 
-			for (int i = 2; i < 20; i++)
+			for (int i = 2; i < 50; i++)
 			{
 				int j = i;
 				actions.Add(() => SumRootN(j));
@@ -198,7 +198,7 @@ namespace TaskThread
 			watch = Stopwatch.StartNew();
 			tasks = new List<Task>();
 
-			Parallel.For(2, 20, (i) =>
+			Parallel.For(2, 50, (i) =>
 			{
 				SumRootN(i);
 			});
